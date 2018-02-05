@@ -46,6 +46,10 @@ module Ralyxa
         @request['session']['new']
       end
 
+      def session_id
+        @request['session']['sessionId']
+      end
+
       def session_attribute(attribute_name)
         @request['session']['attributes'][attribute_name]
       end
