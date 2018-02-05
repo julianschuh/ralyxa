@@ -2,6 +2,7 @@ require 'json'
 require 'forwardable'
 require 'alexa_verifier'
 require_relative './user'
+require_relative './slot'
 
 module Ralyxa
   module RequestEntities
@@ -29,6 +30,16 @@ module Ralyxa
 
       def slot_value(slot_name)
         @request['request']['intent']['slots'][slot_name]['value']
+      end
+
+      def slot(slot_name)
+        slots.select { |slot| slot.name == slot_name }.first
+      end
+
+      def slots
+        @slots ||= @request['request']['intent']['slots'].values.map do |slot|
+          Ralyxa::RequestEntities::Slot.build(slot)
+        end
       end
 
       def new_session?
