@@ -3,9 +3,10 @@ require_relative '../errors'
 module Ralyxa
   module ResponseEntities
     class Card
-      LINK_ACCOUNT_CARD_TYPE = 'LinkAccount'.freeze
-      SIMPLE_CARD_TYPE       = 'Simple'.freeze
-      STANDARD_CARD_TYPE     = 'Standard'.freeze
+      LINK_ACCOUNT_CARD_TYPE        = 'LinkAccount'.freeze
+      SIMPLE_CARD_TYPE              = 'Simple'.freeze
+      STANDARD_CARD_TYPE            = 'Standard'.freeze
+      ASK_FOR_PERMISSIONS_CARD_TYPE = 'AskForPermissionsConsent'.freeze
 
       def initialize(options)
         @options = options
@@ -19,21 +20,27 @@ module Ralyxa
         new(link_account: true).to_h
       end
 
+      def self.ask_for_permissions(permissions)
+        new(permissions: permissions).to_h
+      end
+
       def to_h
         {}.tap do |card|
           add_type(card)
           add_title(card) if @options[:title]
           add_body(card)  if @options[:body]
           add_image(card) if @options[:image_url]
+          add_permissions(card) if @options[:permissions]
         end
       end
 
       private
 
       def add_type(card)
-        return card[:type] = LINK_ACCOUNT_CARD_TYPE if link_account?
-        card[:type]        = SIMPLE_CARD_TYPE       if simple?
-        card[:type]        = STANDARD_CARD_TYPE     if standard?
+        return card[:type] = LINK_ACCOUNT_CARD_TYPE            if link_account?
+        return card[:type] = ASK_FOR_PERMISSIONS_CARD_TYPE     if ask_for_permissions?
+        card[:type]        = SIMPLE_CARD_TYPE                  if simple?
+        card[:type]        = STANDARD_CARD_TYPE                if standard?
       end
 
       def add_title(card)
@@ -52,6 +59,10 @@ module Ralyxa
         card[:image][:largeImageUrl] = @options[:image_url]
       end
 
+      def add_permissions(card)
+        card[:permissions] = @options[:permissions]
+      end
+
       def link_account?
         !@options[:link_account].nil?
       end
@@ -62,6 +73,10 @@ module Ralyxa
 
       def standard?
         !@options[:image_url].nil?
+      end
+
+      def ask_for_permissions?
+        !@options[:permissions].nil?
       end
 
       def secure?

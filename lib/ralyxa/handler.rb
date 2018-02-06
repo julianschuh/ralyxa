@@ -28,6 +28,10 @@ module Ralyxa
       card_class.link_account
     end
 
+    def ask_for_permissions_card(permissions = [], card_class = Ralyxa::ResponseEntities::Card)
+      card_class.ask_for_permissions(permissions)
+    end
+
     alias ask respond
 
     attr_reader :request
