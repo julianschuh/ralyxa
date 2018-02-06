@@ -1,4 +1,5 @@
 require_relative './response_builder'
+require_relative './api/api_request'
 require_relative './response_entities/card'
 
 # Handler Base Class. Each Intent Handler inherits from this, and overwrites the #handle method.
@@ -30,6 +31,10 @@ module Ralyxa
 
     def ask_for_permissions_card(permissions = [], card_class = Ralyxa::ResponseEntities::Card)
       card_class.ask_for_permissions(permissions)
+    end
+
+    def api_request(request_type = Ralyxa::Api::REQUEST_TYPE_COUNTRY_AND_POSTAL, api_request_class = Ralyxa::Api::ApiRequest)
+      api_request_class.perform(request_type, @request)
     end
 
     alias ask respond

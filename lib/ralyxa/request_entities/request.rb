@@ -54,6 +54,17 @@ module Ralyxa
         @request['session']['attributes'][attribute_name]
       end
 
+      def device_id
+        @request.dig('context', 'System', 'device', 'deviceId')
+      end
+
+      def api
+        {
+          endpoint: @request.dig('context', 'System', 'apiEndpoint'),
+          access_token: @request.dig('context', 'System', 'apiAccessToken')
+        }
+      end
+
       private
 
       def intent_request?
